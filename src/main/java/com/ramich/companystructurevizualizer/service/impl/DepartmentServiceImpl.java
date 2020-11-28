@@ -38,7 +38,10 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (!department1.isPresent()){
             throw new EntityNotFoundException("Entity not found");
         }
-        return department1.get();
+        Department ddd = department1.get();
+        ddd.setId(id);
+        ddd.setName(department.getName());
+        return departmentRepository.save(ddd);
     }
 
     @Override
