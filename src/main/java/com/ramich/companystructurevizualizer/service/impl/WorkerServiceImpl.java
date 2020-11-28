@@ -42,7 +42,12 @@ public class WorkerServiceImpl implements WorkerService {
         if (!worker1.isPresent()){
             throw new EntityNotFoundException("Entity not found");
         }
-        return worker1.get();
+        Worker www = worker1.get();
+        www.setId(id);
+        www.setFirstname(worker.getFirstname());
+        www.setLastname(worker.getLastname());
+        www.setPosition(worker.getPosition());
+        return workerRepository.save(www);
     }
 
     @Override
