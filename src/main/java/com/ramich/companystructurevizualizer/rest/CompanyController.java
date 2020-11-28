@@ -28,10 +28,15 @@ public class CompanyController {
         return ResponseEntity.status(201).body(dep);
     }
 
-    @PostMapping("/worker")
-    public ResponseEntity<Worker> addWorker(@RequestBody Worker worker){
-        Worker work = workerService.addWorker(worker);
-        return ResponseEntity.status(201).body(work);
+    @PostMapping("/department/{id}/worker")
+    public ResponseEntity<Worker> addWorker(@PathVariable("id") int id, @RequestBody Worker worker){
+        Optional<Department> department = departmentService.getDepartmentById(id);
+        if (!department.isPresent()){
+            throw new EntityNotFoundException("Department not found " + id);
+        }
+        worker.setDepartment(department.get());
+        workerService.addWorker(worker);
+        return ResponseEntity.status(201).body(worker);
     }
 
     @GetMapping("/worker")

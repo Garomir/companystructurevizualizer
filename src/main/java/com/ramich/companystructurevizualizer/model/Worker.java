@@ -1,26 +1,26 @@
 package com.ramich.companystructurevizualizer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import java.sql.Date;
 
 @Entity
 @Table(name = "worker")
 public class Worker {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "firstname")
-    private String firstName;
+    private String firstname;
     @Column(name = "lastname")
-    private String lastName;
+    private String lastname;
     @Column(name = "position")
     private String position;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "department_id", nullable = false)
     @JsonIgnore
     private Department department;
 
@@ -32,20 +32,20 @@ public class Worker {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getPosition() {
@@ -62,6 +62,6 @@ public class Worker {
 
     public void setDepartment(Department department) {
         this.department = department;
-        department.getWorkers().add(this);
+        //department.getWorkers().add(this);
     }
 }

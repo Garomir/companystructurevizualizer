@@ -1,6 +1,7 @@
 package com.ramich.companystructurevizualizer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,7 +11,7 @@ import java.util.Set;
 public class Department {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "name")
     private String name;
@@ -26,9 +27,8 @@ public class Department {
 
     @OneToMany(
             mappedBy = "department",
-            cascade = CascadeType.PERSIST,
+            cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
-    @JsonIgnore
     private Set<Worker> workers;
 
     public int getId() {
@@ -53,8 +53,8 @@ public class Department {
 
     public void setWorkers(Set<Worker> workers) {
         this.workers = workers;
-        for (Worker worker: workers) {
+        /*for (Worker worker: workers) {
             worker.setDepartment(this);
-        }
+        }*/
     }
 }
