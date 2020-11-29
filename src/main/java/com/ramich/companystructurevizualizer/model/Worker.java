@@ -18,11 +18,18 @@ public class Worker {
     private String lastname;
     @Column(name = "position")
     private String position;
+    @Column(name = "salary")
+    private int salary;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "department_id", nullable = false)
     @JsonIgnore
     private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "company_id", nullable = false)
+    @JsonIgnore
+    private Company company;
 
     public int getId() {
         return id;
@@ -56,6 +63,14 @@ public class Worker {
         this.position = position;
     }
 
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
+
     public Department getDepartment() {
         return department;
     }
@@ -63,5 +78,13 @@ public class Worker {
     public void setDepartment(Department department) {
         this.department = department;
         //department.getWorkers().add(this);
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

@@ -27,6 +27,11 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    public List<Worker> getAllWorkersByCompany(int id) {
+        return workerRepository.findByCompany(id);
+    }
+
+    @Override
     public List<Worker> getAllWorkersByDepartment(int id) {
         return workerRepository.findByDepartment(id);
     }
@@ -47,6 +52,7 @@ public class WorkerServiceImpl implements WorkerService {
         www.setFirstname(worker.getFirstname());
         www.setLastname(worker.getLastname());
         www.setPosition(worker.getPosition());
+        www.setSalary(worker.getSalary());
         return workerRepository.save(www);
     }
 

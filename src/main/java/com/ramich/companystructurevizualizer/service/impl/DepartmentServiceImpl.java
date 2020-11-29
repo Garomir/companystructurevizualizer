@@ -23,8 +23,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<Department> getAllDepartments() {
-        return departmentRepository.findAll();
+    public List<Department> getAllDepartmentsByCompany(int id) {
+        return departmentRepository.findByCompany(id);
     }
 
     @Override

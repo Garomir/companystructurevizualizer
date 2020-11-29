@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface WorkerService {
     Worker addWorker(Worker worker);
     List<Worker> getAllWorkers();
+    List<Worker> getAllWorkersByCompany(int id);
     List<Worker> getAllWorkersByDepartment(int id);
     Optional<Worker> getWorkerById(int id);
     Worker updateWorker(int id, Worker worker);

@@ -1,0 +1,60 @@
+Base URL:  http://localhost:8080
+
+------------Company API----------------
+
+/structure
+POST 	addCompany()
+
+/structure
+GET 	gelAllCompanies()
+
+/structure/{id}
+GET	getCompanyById()
+
+/structure/{id}
+PUT	updateCompany()
+
+/structure/{id}
+DELETE	deleteCompany()
+
+------------Department API----------------
+
+/structure/company/{id}/department
+GET	gelAllDepartmentsByCompany()
+
+/structure/{id}/department
+POST 	addDepartment()
+
+/structure/department/{id}
+GET 	getDepartmentyId()
+
+/structure/department/{id}
+PUT	updateDepartment()
+
+/structure/department/{id}
+DELETE	deleteDepartment()
+
+------------Department API----------------
+
+/structure/{comId}/department/{depId}/worker
+POST	addWorker()
+
+/structure/worker
+GET	gelAllWorkers()
+
+/structure/department/worker/{id}
+GET	gelAllWorkersByDepartment
+
+/structure/company/worker/{id}
+GET	gelAllWorkersByCompany()
+
+/structure/worker/{id}
+GET	getWorkerById()
+
+/structure/worker/{id}
+PUT	updateWorker()
+
+/structure/worker/{id}
+DELETE	deleteWorker()
+
+____________________________________________

@@ -11,4 +11,7 @@ public interface WorkerRepository extends JpaRepository<Worker, Integer> {
 
     @Query(value = "select * from worker where department_id = :departmentId",nativeQuery = true)
     List<Worker> findByDepartment(@Param("departmentId") int departmentId);
+
+    @Query(value = "select * from worker where company_id = :companyId",nativeQuery = true)
+    List<Worker> findByCompany(@Param("companyId") int companyId);
 }

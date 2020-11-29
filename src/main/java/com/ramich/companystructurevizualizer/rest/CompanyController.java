@@ -1,7 +1,9 @@
 package com.ramich.companystructurevizualizer.rest;
 
+import com.ramich.companystructurevizualizer.model.Company;
 import com.ramich.companystructurevizualizer.model.Department;
 import com.ramich.companystructurevizualizer.model.Worker;
+import com.ramich.companystructurevizualizer.service.CompanyService;
 import com.ramich.companystructurevizualizer.service.DepartmentService;
 import com.ramich.companystructurevizualizer.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/structure")
 public class CompanyController {
 
     @Autowired
@@ -22,19 +24,67 @@ public class CompanyController {
     @Autowired
     private DepartmentService departmentService;
 
-    @PostMapping("/department")
-    public ResponseEntity<Department> addDepartment(@RequestBody Department department){
-        Department dep = departmentService.addDepartment(department);
-        return ResponseEntity.status(201).body(dep);
+    @Autowired
+    private CompanyService companyService;
+
+    @PostMapping
+    public ResponseEntity<Company> addCompany(@RequestBody Company company){
+        Company com = companyService.addCompany(company);
+        return ResponseEntity.status(201).body(com);
     }
 
-    @PostMapping("/department/{id}/worker")
-    public ResponseEntity<Worker> addWorker(@PathVariable("id") int id, @RequestBody Worker worker){
-        Optional<Department> department = departmentService.getDepartmentById(id);
+    @GetMapping
+    public ResponseEntity<List<Company>> gelAllCompanies(){
+        List<Company> companies = companyService.getAllCompanies();
+        return ResponseEntity.ok().body(companies);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Company> getCompanyById(@PathVariable("id") int id){
+        Optional<Company> company = companyService.getCompanyById(id);
+        if (!company.isPresent()){
+            throw new EntityNotFoundException("Company not found " + id);
+        }
+        return ResponseEntity.ok().body(company.get());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Company> updateCompany(@PathVariable("id") int id, @RequestBody Company company){
+        Company c = companyService.updateCompany(id, company);
+        return ResponseEntity.ok().body(c);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCompany(@PathVariable("id") int id){
+        companyService.deleteCompany(id);
+    }
+
+    @PostMapping("/{id}/department")
+    public ResponseEntity<Department> addDepartment(@PathVariable("id") int id,
+                                                    @RequestBody Department department){
+        Optional<Company> company = companyService.getCompanyById(id);
+        if (!company.isPresent()){
+            throw new EntityNotFoundException("Company not found " + id);
+        }
+        department.setCompany(company.get());
+        departmentService.addDepartment(department);
+        return ResponseEntity.status(201).body(department);
+    }
+
+    @PostMapping("/{comId}/department/{depId}/worker")
+    public ResponseEntity<Worker> addWorker(@PathVariable("depId") int depId,
+                                            @PathVariable("comId") int comId,
+                                            @RequestBody Worker worker){
+        Optional<Company> company = companyService.getCompanyById(comId);
+        if (!company.isPresent()){
+            throw new EntityNotFoundException("Company not found " + comId);
+        }
+        Optional<Department> department = departmentService.getDepartmentById(depId);
         if (!department.isPresent()){
-            throw new EntityNotFoundException("Department not found " + id);
+            throw new EntityNotFoundException("Department not found " + depId);
         }
         worker.setDepartment(department.get());
+        worker.setCompany(company.get());
         workerService.addWorker(worker);
         return ResponseEntity.status(201).body(worker);
     }
@@ -45,9 +95,9 @@ public class CompanyController {
         return ResponseEntity.ok().body(workers);
     }
 
-    @GetMapping("/department")
-    public ResponseEntity<List<Department>> gelAllDepartments(){
-        List<Department> departments = departmentService.getAllDepartments();
+    @GetMapping("/company/{id}/department")
+    public ResponseEntity<List<Department>> gelAllDepartmentsByCompany(@PathVariable("id") int id){
+        List<Department> departments = departmentService.getAllDepartmentsByCompany(id);
         return ResponseEntity.ok().body(departments);
     }
 
@@ -55,6 +105,12 @@ public class CompanyController {
     public ResponseEntity<List<Worker>> gelAllWorkersByDepartment(@PathVariable("id") int id){
         List<Worker> workers2 = workerService.getAllWorkersByDepartment(id);
         return ResponseEntity.ok().body(workers2);
+    }
+
+    @GetMapping("/company/worker/{id}")
+    public ResponseEntity<List<Worker>> gelAllWorkersByCompany(@PathVariable("id") int id){
+        List<Worker> workers = workerService.getAllWorkersByCompany(id);
+        return ResponseEntity.ok().body(workers);
     }
 
     @GetMapping("/worker/{id}")
@@ -69,7 +125,7 @@ public class CompanyController {
     @GetMapping("/department/{id}")
     public ResponseEntity<Department> getDepartmentyId(@PathVariable("id") int id){
         Optional<Department> department = departmentService.getDepartmentById(id);
-        if (!department.isPresent()){
+        if (department.isEmpty()){
             throw new EntityNotFoundException("Department not found " + id);
         }
         return ResponseEntity.ok().body(department.get());

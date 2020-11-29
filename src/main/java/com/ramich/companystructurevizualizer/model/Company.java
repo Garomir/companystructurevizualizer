@@ -1,14 +1,13 @@
 package com.ramich.companystructurevizualizer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "department")
-public class Department {
+@Table(name = "company")
+public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,16 +16,18 @@ public class Department {
     private String name;
 
     @OneToMany(
-            mappedBy = "department",
+            mappedBy = "company",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Department> departments;
+
+    @OneToMany(
+            mappedBy = "company",
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Worker> workers;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "company_id", nullable = false)
-    @JsonIgnore
-    private Company company;
 
     public int getId() {
         return id;
@@ -44,22 +45,19 @@ public class Department {
         this.name = name;
     }
 
+    public Set<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(Set<Department> departments) {
+        this.departments = departments;
+    }
+
     public Set<Worker> getWorkers() {
         return workers;
     }
 
     public void setWorkers(Set<Worker> workers) {
         this.workers = workers;
-        /*for (Worker worker: workers) {
-            worker.setDepartment(this);
-        }*/
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
     }
 }
