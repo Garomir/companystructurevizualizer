@@ -3,8 +3,6 @@ package com.ramich.companystructurevizualizer.service.impl;
 import com.ramich.companystructurevizualizer.model.Department;
 import com.ramich.companystructurevizualizer.repository.DepartmentRepository;
 import com.ramich.companystructurevizualizer.service.DepartmentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -14,8 +12,11 @@ import java.util.Optional;
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
-    @Autowired
-    private DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;
+
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
+        this.departmentRepository = departmentRepository;
+    }
 
     @Override
     public Department addDepartment(Department department) {

@@ -1,10 +1,8 @@
 package com.ramich.companystructurevizualizer.service.impl;
 
 import com.ramich.companystructurevizualizer.model.Company;
-import com.ramich.companystructurevizualizer.model.Department;
 import com.ramich.companystructurevizualizer.repository.CompanyRepository;
 import com.ramich.companystructurevizualizer.service.CompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -14,8 +12,11 @@ import java.util.Optional;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    private final CompanyRepository companyRepository;
+
+    public CompanyServiceImpl(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
+    }
 
     @Override
     public Company addCompany(Company company) {

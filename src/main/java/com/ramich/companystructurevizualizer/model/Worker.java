@@ -1,9 +1,9 @@
 package com.ramich.companystructurevizualizer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name = "worker")
@@ -20,6 +20,8 @@ public class Worker {
     private String position;
     @Column(name = "salary")
     private int salary;
+    @Column(name = "birthday")
+    private Date birthday;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "department_id", nullable = false)
@@ -61,6 +63,14 @@ public class Worker {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 
     public int getSalary() {

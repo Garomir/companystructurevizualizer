@@ -18,14 +18,17 @@ import java.util.Optional;
 @RequestMapping("/structure")
 public class CompanyController {
 
-    @Autowired
-    private WorkerService workerService;
+    private final WorkerService workerService;
 
-    @Autowired
-    private DepartmentService departmentService;
+    private final DepartmentService departmentService;
 
-    @Autowired
-    private CompanyService companyService;
+    private final CompanyService companyService;
+
+    public CompanyController(WorkerService workerService, DepartmentService departmentService, CompanyService companyService) {
+        this.workerService = workerService;
+        this.departmentService = departmentService;
+        this.companyService = companyService;
+    }
 
     @PostMapping
     public ResponseEntity<Company> addCompany(@RequestBody Company company){
@@ -119,6 +122,7 @@ public class CompanyController {
         if (!worker.isPresent()){
             throw new EntityNotFoundException("Worker not found " + id);
         }
+
         return ResponseEntity.ok().body(worker.get());
     }
 

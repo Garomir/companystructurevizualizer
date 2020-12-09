@@ -3,7 +3,6 @@ package com.ramich.companystructurevizualizer.service.impl;
 import com.ramich.companystructurevizualizer.model.Worker;
 import com.ramich.companystructurevizualizer.repository.WorkerRepository;
 import com.ramich.companystructurevizualizer.service.WorkerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -13,8 +12,13 @@ import java.util.Optional;
 @Service
 public class WorkerServiceImpl implements WorkerService {
 
-    @Autowired
-    private WorkerRepository workerRepository;
+
+    private final WorkerRepository workerRepository;
+
+    public WorkerServiceImpl(WorkerRepository workerRepository) {
+        this.workerRepository = workerRepository;
+    }
+
 
     @Override
     public Worker addWorker(Worker worker) {
@@ -53,6 +57,7 @@ public class WorkerServiceImpl implements WorkerService {
         www.setLastname(worker.getLastname());
         www.setPosition(worker.getPosition());
         www.setSalary(worker.getSalary());
+        www.setBirthday(worker.getBirthday());
         return workerRepository.save(www);
     }
 
