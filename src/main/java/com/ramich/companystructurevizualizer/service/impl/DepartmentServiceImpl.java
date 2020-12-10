@@ -3,6 +3,7 @@ package com.ramich.companystructurevizualizer.service.impl;
 import com.ramich.companystructurevizualizer.model.Department;
 import com.ramich.companystructurevizualizer.repository.DepartmentRepository;
 import com.ramich.companystructurevizualizer.service.DepartmentService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -10,13 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
-    }
 
     @Override
     public Department addDepartment(Department department) {
