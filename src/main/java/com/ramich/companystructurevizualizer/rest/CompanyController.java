@@ -6,7 +6,6 @@ import com.ramich.companystructurevizualizer.model.Worker;
 import com.ramich.companystructurevizualizer.service.CompanyService;
 import com.ramich.companystructurevizualizer.service.DepartmentService;
 import com.ramich.companystructurevizualizer.service.WorkerService;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/structure")
-@AllArgsConstructor
 public class CompanyController {
 
     private final WorkerService workerService;
@@ -24,6 +22,12 @@ public class CompanyController {
     private final DepartmentService departmentService;
 
     private final CompanyService companyService;
+
+    public CompanyController(WorkerService workerService, DepartmentService departmentService, CompanyService companyService) {
+        this.workerService = workerService;
+        this.departmentService = departmentService;
+        this.companyService = companyService;
+    }
 
     @PostMapping
     public ResponseEntity<Company> addCompany(@RequestBody Company company){

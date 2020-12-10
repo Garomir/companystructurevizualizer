@@ -14,7 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
 
-    private final CompanyRepository companyRepository;
+    private CompanyRepository companyRepository;
 
     @Override
     public Company addCompany(Company company) {

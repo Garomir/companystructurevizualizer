@@ -22,6 +22,8 @@ public class Worker {
     private int salary;
     @Column(name = "birthday")
     private Date birthday;
+    @Column(name = "foto")
+    private String foto;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "department_id", nullable = false)
@@ -79,6 +81,14 @@ public class Worker {
 
     public void setSalary(int salary) {
         this.salary = salary;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public Department getDepartment() {

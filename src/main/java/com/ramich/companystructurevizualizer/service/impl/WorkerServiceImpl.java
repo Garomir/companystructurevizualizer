@@ -14,9 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class WorkerServiceImpl implements WorkerService {
 
-
-    private final WorkerRepository workerRepository;
-
+    private WorkerRepository workerRepository;
 
     @Override
     public Worker addWorker(Worker worker) {

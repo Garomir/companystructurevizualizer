@@ -14,7 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
 
-    private final DepartmentRepository departmentRepository;
+    private DepartmentRepository departmentRepository;
 
     @Override
     public Department addDepartment(Department department) {
