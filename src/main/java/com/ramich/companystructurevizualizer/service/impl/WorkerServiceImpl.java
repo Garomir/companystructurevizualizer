@@ -3,6 +3,7 @@ package com.ramich.companystructurevizualizer.service.impl;
 import com.ramich.companystructurevizualizer.model.Worker;
 import com.ramich.companystructurevizualizer.repository.WorkerRepository;
 import com.ramich.companystructurevizualizer.service.WorkerService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -10,14 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class WorkerServiceImpl implements WorkerService {
 
 
     private final WorkerRepository workerRepository;
-
-    public WorkerServiceImpl(WorkerRepository workerRepository) {
-        this.workerRepository = workerRepository;
-    }
 
 
     @Override
