@@ -6,10 +6,18 @@ import com.ramich.companystructurevizualizer.model.Worker;
 import com.ramich.companystructurevizualizer.service.CompanyService;
 import com.ramich.companystructurevizualizer.service.DepartmentService;
 import com.ramich.companystructurevizualizer.service.WorkerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,11 +25,16 @@ import java.util.Optional;
 @RequestMapping("/structure")
 public class CompanyController {
 
+    private static final String DIRECTORY = "C:\\Proj\\companystructurevizualizer\\fotos\\";
+
     private final WorkerService workerService;
 
     private final DepartmentService departmentService;
 
     private final CompanyService companyService;
+
+    @Autowired
+    private ServletContext servletContext;
 
     public CompanyController(WorkerService workerService, DepartmentService departmentService, CompanyService companyService) {
         this.workerService = workerService;
@@ -154,5 +167,26 @@ public class CompanyController {
     @DeleteMapping("/department/{id}")
     public void deleteDepartment(@PathVariable("id") int id){
         departmentService.deleteDepartment(id);
+    }
+
+    @GetMapping("/worker/img/{img}")
+    public ResponseEntity<InputStreamResource> downloadImg(@PathVariable("img") int img) throws IOException, EntityNotFoundException  {
+        Optional<Worker> www = workerService.getWorkerById(img);
+        if (!www.isPresent()) throw new EntityNotFoundException("Worker not found");
+        String fileName = www.get().getFoto();
+        String mineType = servletContext.getMimeType(fileName);
+        MediaType mediaType = MediaType.parseMediaType(mineType);
+
+        File file = new File(DIRECTORY + fileName);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+        return ResponseEntity.ok()
+                // Content-Disposition
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                // Content-Type
+                .contentType(mediaType)
+                // Contet-Length
+                .contentLength(file.length()) //
+                .body(resource);
     }
 }
