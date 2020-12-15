@@ -11,13 +11,19 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
@@ -188,5 +194,37 @@ public class CompanyController {
                 // Contet-Length
                 .contentLength(file.length()) //
                 .body(resource);
+    }
+
+    @PostMapping("/worker/img/{img}")
+    @ResponseBody
+    public void uploadImg(@PathVariable("img") int img,
+                           @RequestParam("file") MultipartFile file) {
+        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        try {
+            if (file.isEmpty()) {
+                throw new RuntimeException("Failed to store empty file " + filename);
+            }
+            if (filename.contains("..")) {
+                throw new RuntimeException(
+                        "Cannot store file with relative path outside current directory "
+                                + filename);
+            }
+            try (InputStream inputStream = file.getInputStream()) {
+                Files.copy(inputStream, Path.of(DIRECTORY + filename), StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store file " + filename, e);
+        }
+        Optional<Worker> ww = workerService.getWorkerById(img);
+        if (!ww.isPresent()) throw new EntityNotFoundException("Worker not found");
+        Worker worker = ww.get();
+        try {
+            Files.delete(Path.of(DIRECTORY + worker.getFoto()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        worker.setFoto(filename);
+        workerService.updateWorker(img, ww.get());
     }
 }
