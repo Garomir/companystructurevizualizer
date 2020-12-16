@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -201,17 +202,19 @@ public class CompanyController {
     public void uploadImg(@PathVariable("img") int img,
                            @RequestParam("file") MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        String newFilename = new Date().getTime() + ".jpg";
         try {
             if (file.isEmpty()) {
                 throw new RuntimeException("Failed to store empty file " + filename);
             }
-            if (filename.contains("..")) {
+            //Эта проверка имени нужна только если я сохраняю фото с родным именем
+            /*if (filename.contains("..")) {
                 throw new RuntimeException(
                         "Cannot store file with relative path outside current directory "
                                 + filename);
-            }
+            }*/
             try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, Path.of(DIRECTORY + filename), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(inputStream, Path.of(DIRECTORY + newFilename), StandardCopyOption.REPLACE_EXISTING);
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file " + filename, e);
@@ -224,7 +227,7 @@ public class CompanyController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        worker.setFoto(filename);
+        worker.setFoto(newFilename);
         workerService.updateWorker(img, ww.get());
     }
 }
