@@ -7,32 +7,16 @@ import com.ramich.companystructurevizualizer.service.CompanyService;
 import com.ramich.companystructurevizualizer.service.DepartmentService;
 import com.ramich.companystructurevizualizer.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/structure")
 public class CompanyController {
-
-    private static final String DIRECTORY = "C:\\Proj\\companystructurevizualizer\\fotos\\";
 
     private final WorkerService workerService;
 
@@ -174,60 +158,5 @@ public class CompanyController {
     @DeleteMapping("/department/{id}")
     public void deleteDepartment(@PathVariable("id") int id){
         departmentService.deleteDepartment(id);
-    }
-
-    @GetMapping("/worker/img/{img}")
-    public ResponseEntity<InputStreamResource> downloadImg(@PathVariable("img") int img) throws IOException, EntityNotFoundException  {
-        Optional<Worker> www = workerService.getWorkerById(img);
-        if (!www.isPresent()) throw new EntityNotFoundException("Worker not found");
-        String fileName = www.get().getFoto();
-        String mineType = servletContext.getMimeType(fileName);
-        MediaType mediaType = MediaType.parseMediaType(mineType);
-
-        File file = new File(DIRECTORY + fileName);
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-
-        return ResponseEntity.ok()
-                // Content-Disposition
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                // Content-Type
-                .contentType(mediaType)
-                // Contet-Length
-                .contentLength(file.length()) //
-                .body(resource);
-    }
-
-    @PostMapping("/worker/img/{img}")
-    @ResponseBody
-    public void uploadImg(@PathVariable("img") int img,
-                           @RequestParam("file") MultipartFile file) {
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
-        String newFilename = new Date().getTime() + ".jpg";
-        try {
-            if (file.isEmpty()) {
-                throw new RuntimeException("Failed to store empty file " + filename);
-            }
-            //Эта проверка имени нужна только если я сохраняю фото с родным именем
-            /*if (filename.contains("..")) {
-                throw new RuntimeException(
-                        "Cannot store file with relative path outside current directory "
-                                + filename);
-            }*/
-            try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, Path.of(DIRECTORY + newFilename), StandardCopyOption.REPLACE_EXISTING);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store file " + filename, e);
-        }
-        Optional<Worker> ww = workerService.getWorkerById(img);
-        if (!ww.isPresent()) throw new EntityNotFoundException("Worker not found");
-        Worker worker = ww.get();
-        try {
-            Files.delete(Path.of(DIRECTORY + worker.getFoto()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        worker.setFoto(newFilename);
-        workerService.updateWorker(img, ww.get());
     }
 }
